@@ -35,7 +35,16 @@ class LogicsImpl(private val size: Int, private val mines: Int) extends Logics:
     case p => OptionToOptional(Some(neighbours(p)))
 
   def neighbours(p: Pair) : Int =
-    (p.x - 1 to p.x + 1).flatMap(xx =>
-      (p.y - 1 to p.y + 1).map(yy => Pair(xx, yy))
-    ).count(p => List.contains(listMines, p))
+    var listX : List[Int] = Nil()
+    for i <- p.x - 1 to p.x + 1 do listX = append(listX, List.cons(i, Nil()))
+    var listY : List[Int] = Nil()
+    for i <- p.y - 1 to p.y + 1 do listY = append(listY, List.cons(i, Nil()))
+    length(
+      List.filter(
+        List.flatMap(listX)(xx =>
+          List.map(listY)(yy => Pair(xx, yy))
+        )
+      )(p => List.contains(listMines, p))
+    )
+
   def won : Boolean = List.length(selected) + List.length(listMines) eq (size * size)
